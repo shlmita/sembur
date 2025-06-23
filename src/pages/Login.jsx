@@ -10,6 +10,7 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
 
     const { data, error: loginError } = await supabase.auth.signInWithPassword({
       email,
@@ -23,7 +24,6 @@ const Login = () => {
 
     const user = data.user;
 
-    // Cek role dari profiles
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("role")
@@ -38,41 +38,57 @@ const Login = () => {
   };
 
   return (
-    <div className="pt-20 pb-20">
-    <form onSubmit={handleLogin} className="max-w-sm mx-auto mt-10 p-6 bg-white shadow rounded">
-      <h2 className="text-xl font-bold mb-4">Login</h2>
-      {error && <p className="text-red-500 mb-3">{error}</p>}
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold text-green-700 mb-6 text-center">Login</h2>
+        <form onSubmit={handleLogin} className="space-y-4">
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-full mb-3 p-2 border rounded"
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="w-full mb-4 p-2 border rounded"
-        required
-      />
-      <button
-        type="submit"
-        className="w-full bg-sky-600 text-white p-2 rounded hover:bg-sky-700 transition"
-      >
-        Login
-      </button>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Masukkan email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              required
+            />
+          </div>
 
-      <p className="mt-4 text-sm text-center text-gray-600">
-        Belum punya akun?{" "}
-        <Link to="/register" className="text-blue-600 hover:underline">
-          Daftar sekarang
-        </Link>
-      </p>
-    </form>
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Masukkan password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition"
+          >
+            Login
+          </button>
+
+          <p className="mt-4 text-sm text-center text-gray-600">
+            Belum punya akun?{" "}
+            <Link to="/register" className="text-green-600 hover:underline">
+              Daftar sekarang
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 };

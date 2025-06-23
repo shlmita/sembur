@@ -424,7 +424,7 @@ try {
           {metode === 'QRIS' && (
             <div className="mt-4">
               <p className="text-sm mb-2">Silakan scan QRIS berikut dan upload bukti pembayaran</p>
-              <img src="/qris.png" alt="QRIS" className="w-48" />
+              <img src="/qris.jpg" alt="QRIS" className="w-48" />
               <input type="file" className="mt-2" accept="image/*" onChange={(e) => setBukti(e.target.files[0])} />
             </div>
           )}
