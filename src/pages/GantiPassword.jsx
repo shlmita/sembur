@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,7 +7,18 @@ export default function GantiPassword() {
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate('/login'); // redirect kalau belum login
+      }
+    };
+    checkUser();
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,29 +30,38 @@ export default function GantiPassword() {
       return;
     }
 
+    if (password.length < 6) {
+      setError('Password minimal 6 karakter.');
+      return;
+    }
+
     if (password !== confirm) {
       setError('Password dan konfirmasi tidak cocok.');
       return;
     }
 
-    const { error } = await supabase.auth.updateUser({
-      password,
-    });
+    setLoading(true);
 
-    if (error) {
-      setError(error.message);
+    const { error: updateError } = await supabase.auth.updateUser({ password });
+
+    if (updateError) {
+      setError(updateError.message);
     } else {
-      setSuccess('Password berhasil diubah.');
-      setTimeout(() => {
-        navigate('/');
+      setSuccess('Password berhasil diubah. Anda akan diarahkan ke halaman login.');
+      setTimeout(async () => {
+        await supabase.auth.signOut();
+        navigate('/login');
       }, 2000);
     }
+
+    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center px-4">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-green-700 mb-6 text-center">Ganti Password</h2>
+
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
@@ -56,6 +76,7 @@ export default function GantiPassword() {
               required
             />
           </div>
+
           <div>
             <label htmlFor="confirm" className="block text-sm font-medium text-gray-700">
               Konfirmasi Password
@@ -69,13 +90,20 @@ export default function GantiPassword() {
               required
             />
           </div>
+
           {error && <p className="text-red-500 text-sm">{error}</p>}
           {success && <p className="text-green-600 text-sm">{success}</p>}
+
           <button
             type="submit"
-            className="w-full bg-green-700 hover:bg-green-800 text-white py-2 px-4 rounded-md transition"
+            className={`w-full text-white py-2 px-4 rounded-md transition ${
+              loading
+                ? 'bg-gray-400 cursor-not-allowed'
+                : 'bg-green-700 hover:bg-green-800'
+            }`}
+            disabled={loading}
           >
-            Simpan
+            {loading ? 'Menyimpan...' : 'Simpan'}
           </button>
         </form>
       </div>

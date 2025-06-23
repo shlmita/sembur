@@ -17,7 +17,7 @@ const Register = () => {
       email,
       password,
       options: {
-        emailRedirectTo: null, // cegah auto-login dari Supabase
+        emailRedirectTo: null,
       },
     });
 
@@ -42,55 +42,78 @@ const Register = () => {
       return;
     }
 
-    // Langsung logout agar user tidak langsung login
     await supabase.auth.signOut();
-
     navigate("/login");
   };
 
   return (
-    <form onSubmit={handleRegister} className="max-w-sm mx-auto mt-10 p-6 bg-white shadow rounded">
-      <h2 className="text-xl font-bold mb-4">Register</h2>
-      {error && <p className="text-red-500 mb-3">{error}</p>}
+    <div className="min-h-screen flex items-center justify-center px-4 pt-16">
+      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-md">
+        <h2 className="text-2xl font-bold text-green-700 mb-6 text-center">Daftar Akun</h2>
+        <form onSubmit={handleRegister} className="space-y-4">
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
-      <input
-        type="text"
-        placeholder="Full Name"
-        value={fullName}
-        onChange={(e) => setFullName(e.target.value)}
-        className="w-full mb-3 p-2 border rounded"
-        required
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="w-full mb-3 p-2 border rounded"
-        required
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="w-full mb-4 p-2 border rounded"
-        required
-      />
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
-      >
-        Register
-      </button>
+          <div>
+            <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+              Nama Lengkap
+            </label>
+            <input
+              type="text"
+              id="fullName"
+              placeholder="Masukkan nama lengkap"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+              required
+            />
+          </div>
 
-      <p className="mt-4 text-sm text-center text-gray-600">
-        Sudah punya akun?{" "}
-        <Link to="/login" className="text-blue-600 hover:underline">
-          Masuk di sini
-        </Link>
-      </p>
-    </form>
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email
+            </label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Masukkan email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Masukkan password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition"
+          >
+            Register
+          </button>
+
+          <p className="mt-4 text-sm text-center text-gray-600">
+            Sudah punya akun?{" "}
+            <Link to="/login" className="text-green-600 hover:underline">
+              Masuk di sini
+            </Link>
+          </p>
+        </form>
+      </div>
+    </div>
   );
 };
 
