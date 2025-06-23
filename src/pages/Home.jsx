@@ -67,15 +67,18 @@ const Home = () => {
               
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
           {/* Alat Satuan */}
+          <Link to="/satuan" className="group">
           <div className="bg-[#f5f3f0] shadow-md rounded-xl p-6 hover:scale-105 transition text-center">
             <Tractor size={48} className="mx-auto text-[#3a4b3c]" />
             <h3 className="text-xl font-semibold text-[#3a4b3c] mt-4">Alat Satuan</h3>
             <p className="text-sm text-[#4e5c50] mt-2">
-              Sewa atau beli alat pertanian per unit sesuai kebutuhanmu.
+              Sewa atau beli alat pertanian per unit sesuai kebutuhan tanamanmu.
             </p>
           </div>
+          </Link>
               
           {/* Alat Paket */}
+          <Link to="/paket" className="group">
           <div className="bg-[#f5f3f0] shadow-md rounded-xl p-6 hover:scale-105 transition text-center">
             <Package size={48} className="mx-auto text-[#3a4b3c]" />
             <h3 className="text-xl font-semibold text-[#3a4b3c] mt-4">Alat Paket</h3>
@@ -83,6 +86,7 @@ const Home = () => {
               Paket alat lengkap untuk pengelolaan pertanian secara menyeluruh.
             </p>
           </div>
+        </Link>
               
           {/* Kustom */}
           <div className="bg-[#f5f3f0] shadow-md rounded-xl p-6 hover:scale-105 transition text-center">
@@ -94,6 +98,7 @@ const Home = () => {
           </div>
               
           {/* Konsultasi */}
+          <Link to="https://wa.me/6281234567890" className="group">
           <div className="bg-[#f5f3f0] shadow-md rounded-xl p-6 hover:scale-105 transition text-center">
             <MessageCircle size={48} className="mx-auto text-[#3a4b3c]" />
             <h3 className="text-xl font-semibold text-[#3a4b3c] mt-4">Konsultasi</h3>
@@ -101,6 +106,7 @@ const Home = () => {
               Konsultasi gratis tentang alat dan pengelolaan pertanian modern.
             </p>
           </div>
+          </Link>
         </div>
       </section>
 
@@ -138,6 +144,7 @@ const Home = () => {
           </motion.div>
 
           {/* Card 3 */}
+          <Link to="https://wa.me/6281234567890" className="group">
           <motion.div 
             whileHover={{ y: -5 }} 
             transition={{ type: "spring", stiffness: 200, delay: 0.2 }} 
@@ -149,6 +156,7 @@ const Home = () => {
               Diskusi langsung dengan tim ahli kami mengenai alat terbaik untuk lahan dan kebutuhanmu.
             </p>
           </motion.div>
+          </Link>
         </div>
       </section>
 

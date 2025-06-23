@@ -1,5 +1,5 @@
-import { Facebook, Instagram, Linkedin } from "lucide-react";
 import { Link } from "react-router-dom";
+import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -35,13 +35,37 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Social */}
+        {/* Sosial Media */}
         <div>
           <h3 className="text-lg font-semibold mb-5 text-green-300">Ikuti Kami</h3>
-          <div className="flex space-x-5">
-            <a href="#"><Facebook className="hover:text-green-400 transition" /></a>
-            <a href="#"><Instagram className="hover:text-green-400 transition" /></a>
-            <a href="#"><Linkedin className="hover:text-green-400 transition" /></a>
+          <div className="flex items-center space-x-5 text-white text-xl">
+            <a
+              href="https://facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              className="hover:text-green-400 transition"
+            >
+              <FaFacebookF size={20} />
+            </a>
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="hover:text-green-400 transition"
+            >
+              <FaInstagram size={20} />
+            </a>
+            <a
+              href="https://wa.me/6281234567890"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="WhatsApp"
+              className="hover:text-green-400 transition"
+            >
+              <FaWhatsapp size={20} />
+            </a>
           </div>
         </div>
       </div>
