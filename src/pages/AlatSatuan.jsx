@@ -53,18 +53,20 @@ export default function AlatSatuanPage() {
 
   return (
     <div className="px-4 py-6 max-w-7xl mx-auto">
-      <h1 className="text-center pt-20 pb-5 text-3xl font-bold mb-4 text-green-700">ALAT SATUAN</h1>
+      <h1 className="text-center pt-20 pb-5 text-2xl md:text-3xl font-bold mb-4 text-green-700">
+        ALAT SATUAN
+      </h1>
 
       {loading ? (
         <p className="text-center text-gray-500 py-10">Memuat produk...</p>
       ) : products.length === 0 ? (
         <p className="text-center text-gray-500 py-10">Tidak ada produk tersedia.</p>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 pb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 pb-10">
           {products.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100"
+              className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100"
             >
               <div className="relative">
                 <img
@@ -75,20 +77,22 @@ export default function AlatSatuanPage() {
               </div>
 
               <div className="p-4 flex flex-col gap-2">
-                <h3 className="text-lg font-semibold text-gray-800 truncate capitalize">{item.nama}</h3>
+                <h3 className="text-base md:text-lg font-semibold text-gray-800 truncate capitalize">
+                  {item.nama}
+                </h3>
 
                 <div className="text-sm text-gray-600 space-y-1 leading-tight">
-                  <p className="text-sm">
+                  <p>
                     <span className="text-green-600 font-semibold inline-flex items-center gap-1">
-                      Beli <ArrowRight size={16} className="inline" />
+                      Beli <ArrowRight size={16} />
                       <span>Rp {item.harga_beli?.toLocaleString('id-ID')}</span>
                     </span>
                     <span className="text-xs text-gray-400 ml-1">/pcs</span>
                   </p>
 
-                  <p className="text-sm">
-                    <span className="text-blue-600 font-semibold inlen-flex items-center gap-1">
-                      Sewa <ArrowRight size={16} className="inline" />
+                  <p>
+                    <span className="text-blue-600 font-semibold inline-flex items-center gap-1">
+                      Sewa <ArrowRight size={16} />
                       <span>Rp {item.harga_sewa?.toLocaleString('id-ID')}</span>
                     </span>
                     <span className="text-xs text-gray-400 ml-1">/hari</span>
@@ -97,11 +101,11 @@ export default function AlatSatuanPage() {
                   <p className="text-xs text-gray-400">Terjual: {item.terjual}</p>
                 </div>
 
-                <div className="flex items-center justify-between gap-2 pt-2">
+                <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-2 pt-2">
                   <button
                     onClick={() => handleAddToCart(item, 'beli')}
                     disabled={item.stok <= 0}
-                    className={`flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-full text-sm font-medium transition ${
+                    className={`flex-1 min-w-[40%] inline-flex items-center justify-center gap-1 px-3 py-2 rounded-full text-sm font-medium transition ${
                       item.stok <= 0
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : 'bg-green-600 text-white hover:bg-green-700'
@@ -113,7 +117,7 @@ export default function AlatSatuanPage() {
                   <button
                     onClick={() => handleAddToCart(item, 'sewa')}
                     disabled={item.stok <= 0}
-                    className={`flex-1 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-full text-sm font-medium transition ${
+                    className={`flex-1 min-w-[40%] inline-flex items-center justify-center gap-1 px-3 py-2 rounded-full text-sm font-medium transition ${
                       item.stok <= 0
                         ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                         : 'bg-blue-600 text-white hover:bg-blue-700'
