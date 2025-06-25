@@ -36,7 +36,7 @@ const AdminLogin = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="w-full px-3 py-2 border rounded"
-            placeholder="admin"
+            placeholder="username"
           />
         </div>
 
@@ -47,7 +47,7 @@ const AdminLogin = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="w-full px-3 py-2 border rounded"
-            placeholder="123456"
+            placeholder="password"
           />
         </div>
 
