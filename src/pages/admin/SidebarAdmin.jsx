@@ -143,7 +143,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
             <ArrowRightOnRectangleIcon className="h-5 w-5 mr-3" />
             Logout
           </button>
-          <p className="mt-4 text-sm text-gray-500 text-center">&copy; 2025 Your Company</p>
+          <p className="mt-4 text-sm text-gray-500 text-center">&copy; 2025 SEMBUR</p>
         </div>
       </div>
     </>

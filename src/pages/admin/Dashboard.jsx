@@ -14,6 +14,58 @@ import { TrendingUp, PackageCheck } from 'lucide-react';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
+// Modal untuk detail stok
+const ModalDetailStok = ({ visible, onClose, title, data }) => {
+  if (!visible) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
+      <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-lg relative">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">{title}</h2>
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 text-gray-500 hover:text-red-500 text-2xl font-bold"
+        >
+          &times;
+        </button>
+        <div className="max-h-80 overflow-y-auto">
+          <table className="w-full text-sm text-left border-collapse">
+            <thead>
+              <tr className="text-gray-700 border-b">
+                <th className="py-2 px-3 font-medium">Nama Produk</th>
+                <th className="py-2 px-3 font-medium text-right">Stok</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((item, index) => (
+                <tr
+                  key={index}
+                  className={`border-b hover:bg-gray-50 ${
+                    index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                  }`}
+                >
+                  <td className="py-2 px-3">{item.nama}</td>
+                  <td className="py-2 px-3 text-right font-semibold">
+                    {item.stok} item
+                  </td>
+                </tr>
+              ))}
+              {data.length === 0 && (
+                <tr>
+                  <td colSpan={2} className="py-4 px-3 text-center text-gray-500">
+                    Tidak ada data produk.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Komponen Kartu Statistik
 const StatCard = ({ title, value, valueLabel }) => {
   const radius = 60;
   const stroke = 12;
@@ -27,12 +79,11 @@ const StatCard = ({ title, value, valueLabel }) => {
   );
 
   return (
-    <div className="relative overflow-hidden bg-white shadow-xl hover:shadow-2xl transition rounded-2xl p-6 w-full flex flex-col items-center border border-gray-100">
+    <div className="cursor-pointer relative overflow-hidden bg-white shadow-xl hover:shadow-2xl transition rounded-2xl p-6 w-full flex flex-col items-center border border-gray-100">
       <div className="relative z-10 flex items-center gap-2 text-gray-800 mb-4">
         {icon}
         <h2 className="text-xl font-semibold">{title}</h2>
       </div>
-
       <div className="relative z-10 w-36 h-36 mb-4">
         <svg width="100%" height="100%">
           <circle
@@ -66,27 +117,55 @@ const StatCard = ({ title, value, valueLabel }) => {
 const Dashboard = () => {
   const [salesChartPeriod, setSalesChartPeriod] = useState('monthly');
   const [revenueChartPeriod, setRevenueChartPeriod] = useState('monthly');
-  const [totalStok, setTotalStok] = useState(0);
+  const [stokSatuan, setStokSatuan] = useState([]);
+  const [stokPaketan, setStokPaketan] = useState([]);
   const [pesananBaru, setPesananBaru] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState('');
+  const [modalData, setModalData] = useState([]);
 
   useEffect(() => {
     fetchDashboardData();
   }, []);
 
-  const fetchDashboardData = async () => {
-    const { data: produk } = await supabase.from('products').select('stok');
-    const { data: orders } = await supabase.from('orders').select('status');
+const fetchDashboardData = async () => {
+  const { data: produk, error } = await supabase
+    .from('products')
+    .select('stok, kategori, nama, created_at')
+    .order('created_at', { ascending: false }); // ← urut dari yang terbaru
 
-    if (produk) {
-      const total = produk.reduce((acc, item) => acc + (item.stok || 0), 0);
-      setTotalStok(total);
-    }
+  const { data: orders } = await supabase.from('orders').select('status');
 
-    if (orders) {
-      const belumSelesai = orders.filter(order => order.status !== 'selesai');
-      setPesananBaru(belumSelesai.length);
-    }
-  };
+  if (error) {
+    console.error('Gagal ambil data produk:', error.message);
+    return;
+  }
+
+  if (produk) {
+    const satuan = produk
+      .filter(p => (p.kategori || '').toLowerCase() === 'satuan')
+      .map(p => ({
+        nama: p.nama || 'Tanpa Nama',
+        stok: typeof p.stok === 'number' ? p.stok : 0,
+      }));
+
+    const paket = produk
+      .filter(p => (p.kategori || '').toLowerCase() === 'paket')
+      .map(p => ({
+        nama: p.nama || 'Tanpa Nama',
+        stok: typeof p.stok === 'number' ? p.stok : 0,
+      }));
+
+    setStokSatuan(satuan);
+    setStokPaketan(paket);
+  }
+
+  if (orders) {
+    const belumSelesai = orders.filter(order => order.status !== 'selesai');
+    setPesananBaru(belumSelesai.length);
+  }
+};
+
 
   const monthlySalesData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
@@ -171,8 +250,29 @@ const Dashboard = () => {
     <div className="p-4 sm:p-8">
       <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-8">Dashboard Overview</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-        <StatCard title="Stok Tersedia" value={totalStok} valueLabel="Item" />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div onClick={() => {
+          setModalTitle('Stok Satuan');
+          setModalData(stokSatuan);
+          setModalOpen(true);
+        }}>
+          <StatCard
+            title="Stok Satuan"
+            value={stokSatuan.reduce((acc, item) => acc + (item.stok || 0), 0)}
+            valueLabel="Item"
+          />
+        </div>
+        <div onClick={() => {
+          setModalTitle('Stok Paketan');
+          setModalData(stokPaketan);
+          setModalOpen(true);
+        }}>
+          <StatCard
+            title="Stok Paketan"
+            value={stokPaketan.reduce((acc, item) => acc + (item.stok || 0), 0)}
+            valueLabel="Item"
+          />
+        </div>
         <StatCard title="Total Pesanan Baru" value={pesananBaru} valueLabel="Pesanan" />
       </div>
 
@@ -207,6 +307,13 @@ const Dashboard = () => {
           />
         </div>
       </div>
+
+      <ModalDetailStok
+        visible={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={modalTitle}
+        data={modalData}
+      />
     </div>
   );
 };
