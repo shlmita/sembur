@@ -43,7 +43,7 @@ function ReverseGeocodeUpdater({ lokasi, setAlamat }) {
       }
     };
     fetchAlamat();
-  }, [lokasi]);
+  }, [lokasi, setAlamat]);
   return null;
 }
 
@@ -65,7 +65,7 @@ export default function Checkout() {
   const { state } = location;
   const items = state?.items || [];
 
-  const [user, setUser] = useState(null);
+  //const [user, setUser] = useState(null);
   const [nama, setNama] = useState('');
   const [nomor, setNomor] = useState('');
   const [alamat, setAlamat] = useState('');
@@ -90,13 +90,24 @@ export default function Checkout() {
     return base;
   };
 
-  useEffect(() => {
-    const jarak = getDistanceFromLatLonInKm(
-      lokasi.lat, lokasi.lng, lokasiToko.lat, lokasiToko.lng
-    );
-    setJarakKm(jarak);
-    setOngkir(hitungHargaOngkir(jarak, jenisKirim));
-  }, [lokasi, jenisKirim]);
+  // useEffect(() => {
+  //   const jarak = getDistanceFromLatLonInKm(
+  //     lokasi.lat, lokasi.lng, lokasiToko.lat, lokasiToko.lng
+  //   );
+  //   setJarakKm(jarak);
+  //   setOngkir(hitungHargaOngkir(jarak, jenisKirim));
+  // }, [lokasi, jenisKirim]);
+
+    useEffect(() => {
+      const jarak = getDistanceFromLatLonInKm(
+        lokasi.lat,
+        lokasi.lng,
+        lokasiToko.lat,
+        lokasiToko.lng
+      );
+      setJarakKm(jarak);
+      setOngkir(hitungHargaOngkir(jarak, jenisKirim));
+    }, [lokasi.lat, lokasi.lng, jenisKirim]);
 
   const hargaBarang = items.reduce((total, item) => {
     if (item.jenis === 'sewa') {
@@ -112,7 +123,7 @@ export default function Checkout() {
   useEffect(() => {
     (async () => {
       const { data } = await supabase.auth.getUser();
-      setUser(data.user);
+      //setUser(data.user);
 
       navigator.geolocation.getCurrentPosition((pos) => {
         const lat = pos.coords.latitude;
@@ -228,7 +239,7 @@ export default function Checkout() {
     return new Promise((resolve, reject) => {
       html2pdf().from(invoiceHTML).set(opt).outputPdf('blob').then(async (pdfBlob) => {
         try {
-          const { data: uploadData, error: uploadError } = await supabase.storage
+          const { error: uploadError } = await supabase.storage
             .from('invoices') // Ganti dengan nama bucket storage Anda untuk invoice
             .upload(`public/${orderId}.pdf`, pdfBlob, {
               cacheControl: '3600',
@@ -281,7 +292,7 @@ export default function Checkout() {
 
         const fileExt = bukti.name.split('.').pop();
         const fileName = `${Date.now()}.${fileExt}`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
+        const { error: uploadError } = await supabase.storage
           .from('bukti-pembayaran')
           .upload(`qris/${fileName}`, bukti);
 
